@@ -291,8 +291,10 @@ export const HEADING: ElementTransformer = {
     if (!$isHeadingNode(node)) {
       return null;
     }
+    const lines = exportChildren(node).split('\n');
     const level = Number(node.getTag().slice(1));
-    return '#'.repeat(level) + ' ' + exportChildren(node);
+    const prefix = '#'.repeat(level) + ' ';
+    return lines.map((line) => prefix + line).join('\n');
   },
   regExp: HEADING_REGEX,
   replace: createBlockNode((match) => {

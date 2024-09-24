@@ -96,6 +96,17 @@ describe('Markdown', () => {
       html: '<h6><span style="white-space: pre-wrap;">Hello world</span></h6>',
       md: '###### Hello world',
     },
+    // Multiline headings
+    {
+      html: '<h1><span style="white-space: pre-wrap;">Hello<br>world</span></h1>',
+      md: '# Hello\n# world',
+      skipImport: true,
+    },
+    {
+      html: '<h1><span style="white-space: pre-wrap;">Hello</span></h1><h1><span style="white-space: pre-wrap;">world</span></h1>',
+      md: '# Hello\n# world',
+      skipExport: true,
+    },
     {
       // Multiline paragraphs: https://spec.commonmark.org/dingus/?text=Hello%0Aworld%0A!
       html: '<p><span style="white-space: pre-wrap;">Helloworld!</span></p>',

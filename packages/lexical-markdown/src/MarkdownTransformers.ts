@@ -291,14 +291,31 @@ export const HEADING: ElementTransformer = {
     if (!$isHeadingNode(node)) {
       return null;
     }
+    const lines = exportChildren(node).split('\n');
     const level = Number(node.getTag().slice(1));
-    return '#'.repeat(level) + ' ' + exportChildren(node);
+    const prefix = '#'.repeat(level) + ' ';
+    return lines.map((line) => prefix + line).join('\n');
   },
   regExp: HEADING_REGEX,
-  replace: createBlockNode((match) => {
+  replace: (parentNode, children, match, isImport) => {
     const tag = ('h' + match[1].length) as HeadingTagType;
-    return $createHeadingNode(tag);
-  }),
+    if (isImport) {
+      const previousNode = parentNode.getPreviousSibling();
+      if ($isHeadingNode(previousNode) && previousNode.getTag() === tag) {
+        previousNode.splice(previousNode.getChildrenSize(), 0, [
+          $createLineBreakNode(),
+          ...children,
+        ]);
+        previousNode.select(0, 0);
+        parentNode.remove();
+        return;
+      }
+    }
+    const node = $createHeadingNode(tag);
+    node.append(...children);
+    parentNode.replace(node);
+    node.select(0, 0);
+  },
   type: 'element',
 };
 
